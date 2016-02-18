@@ -1,7 +1,11 @@
+#!/usr/bin/env python
+
 import os, datetime
 from plexapi.server import PlexServer
 plex = PlexServer()
-keep = []
+# Todo: move to its own separate setting.cfg file
+doTV=1 # defaul action. Use 1 for deleting or 2 for keeping TV Shows
+skipTV = []
 simFiles = ['.srt', '.nfo', '.tbn', '.nzb', '.nfo-orig', '.sfv', '.srr', '.jpg', '.png', '.jpeg', '.txt', '.idx', '.sub']
 kept=0
 deleted=0
@@ -10,7 +14,7 @@ print 'Running Plex Cleaner on '+datetime.datetime.now().strftime('%m/%d/%Y %H:%
 print ''
 for entry in plex.library.section('TV Shows').recentlyViewed():
     tvFile = entry.media[0].parts[0].file
-    if entry.grandparentTitle not in keep:
+    if entry.grandparentTitle not in skipTV:
         if entry not in plex.library.onDeck():
             print 'Deleting '+entry.title+' ::: '+tvFile
             deleted += 1

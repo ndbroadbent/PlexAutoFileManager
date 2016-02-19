@@ -4,7 +4,7 @@ import os, datetime
 from plexapi.server import PlexServer
 plex = PlexServer()
 """ Todo: Change to directive """
-trialRun = 1 # Testing purposes. Use 1 for normal use. Set to 0 for debugging/testing runs that don't delete anything.
+realRun = 1 # Testing purposes. Use 1 for normal use. Set to 0 for debugging/testing runs that don't delete anything.
 """ Todo: move to its own separate setting.cfg file """
 doTV=1 # default action. Use 1 for deleting; use 0 for keeping TV Shows, all but those in skipTV[]
 skipTV = []
@@ -24,14 +24,14 @@ for entry in plex.library.section('TV Shows').recentlyViewed():
     if (bool(doTV) is not bool(entry.grandparentTitle in skipTV)) and entry not in plex.library.onDeck():
         print 'Deleting '+entry.title+' ::: '+tvFile
         deleted += 1
-        if trialRun: os.remove(tvFile)
+        if realRun: os.remove(tvFile)
             if doSim:
                 for sim in simFiles:
                     simFile = os.path.splitext(tvFile)[0]+sim
                     if os.path.isfile(simFile):
                         print '::: Deleting it\'s similar file too ::: '+simFile
                         delSim += 1
-                        if trialRun: os.remove(simFile)
+                        if realRun: os.remove(simFile)
     else:
         kept += 1
 print ''

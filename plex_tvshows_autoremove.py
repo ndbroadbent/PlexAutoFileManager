@@ -37,4 +37,4 @@ for entry in plex.library.section('TV Shows').recentlyViewed():
 print ''
 print str(kept) + ' Episodes Kept'
 print str(deleted) + ' Episodes Deleted'
-print str(delSim) + ' Related Files Deleted'
+print str(delSim) + ' Similar Files Deleted'

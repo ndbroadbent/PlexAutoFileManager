@@ -14,8 +14,7 @@ print 'Running Plex Cleaner on '+datetime.datetime.now().strftime('%m/%d/%Y %H:%
 print ''
 for entry in plex.library.section('TV Shows').recentlyViewed():
     tvFile = entry.media[0].parts[0].file
-    if entry.grandparentTitle not in skipTV and :
-        if entry not in plex.library.onDeck():
+    if entry.grandparentTitle not in skipTV and entry not in plex.library.onDeck():
             print 'Deleting '+entry.title+' ::: '+tvFile
             deleted += 1
             os.remove(tvFile)

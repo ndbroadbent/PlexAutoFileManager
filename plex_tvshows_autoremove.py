@@ -16,8 +16,9 @@ print 'Running Plex Cleaner on '+datetime.datetime.now().strftime('%m/%d/%Y %H:%
 print ''
 for entry in plex.library.section('TV Shows').recentlyViewed():
     tvFile = entry.media[0].parts[0].file
-    """ bool(doTV) is not bool(entry.grandparentTitle in skipTV) is a logic XOR, in Python
-        as far as I know there is no logic operand to do XOR (only bitwise xor) """ 
+    """ (bool(doTV) is not bool(entry.grandparentTitle in skipTV) is a logic XOR, in Python
+        as far as I know there is no logic operand to do XOR (only bitwise xor ^)
+        It can be written using the bitwise xor operand (bool(doTV) ^ bool(entry.grandparentTitle in skipTV) """ 
     if (bool(doTV) is not bool(entry.grandparentTitle in skipTV)) and entry not in plex.library.onDeck():
         print 'Deleting '+entry.title+' ::: '+tvFile
         deleted += 1

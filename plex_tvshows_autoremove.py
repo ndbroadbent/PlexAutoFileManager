@@ -27,11 +27,11 @@ for entry in plex.library.section('TV Shows').recentlyViewed():
         if trialRun: os.remove(tvFile)
             if doSim:
                 for sim in simFiles:
-                simFile = os.path.splitext(tvFile)[0]+sim
-                if os.path.isfile(simFile):
-                    print '::: Deleting it\'s similar file too ::: '+simFile
-                    delSim += 1
-                    if trialRun: os.remove(simFile)
+                    simFile = os.path.splitext(tvFile)[0]+sim
+                    if os.path.isfile(simFile):
+                        print '::: Deleting it\'s similar file too ::: '+simFile
+                        delSim += 1
+                        if trialRun: os.remove(simFile)
     else:
         kept += 1
 print ''

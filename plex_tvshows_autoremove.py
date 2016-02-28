@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 
 import os, datetime
+from datetime import timedelta
 from plexapi.server import PlexServer
 plex = PlexServer()
 """ Todo: Change to directive """
-trialRun = 1 # Testing purposes. Use 1 for normal use. Set to 0 for debugging/testing runs that don't delete anything.
+realRun = 1 # Testing purposes. Use 1 for normal use. Set to 0 for debugging/testing runs that don't delete anything.
 """ Todo: move to its own separate setting.cfg file """
 doTV=1 # default action. Use 1 for deleting; use 0 for keeping TV Shows, all but those in skipTV[]
-skipTV = []
+skipTV = () # Tuple with the TVShows to be either deleted or keep, depending on default action defined the value of doTV
+protectHours=0 # default number of hours after last watched that the TV Show will not be deleted, integer. 
 doSim=1 # Use 1 for deleting similar files with the extensions on simFiles[]; use 0 to avoid deleting them.
-simFiles = ['.srt', '.nfo', '.tbn', '.nzb', '.nfo-orig', '.sfv', '.srr', '.jpg', '.png', '.jpeg', '.txt', '.idx', '.sub']
+simFiles = ('.srt', '.nfo', '.tbn', '.nzb', '.nfo-orig', '.sfv', '.srr', '.jpg', '.png', '.jpeg', '.txt', '.idx', '.sub') # tuple
+""" Status variables or Return variables """
 kept=0
 deleted=0
 delSim=0
@@ -18,20 +21,21 @@ print 'Running Plex Cleaner on '+datetime.datetime.now().strftime('%m/%d/%Y %H:%
 print ''
 for entry in plex.library.section('TV Shows').recentlyViewed():
     tvFile = entry.media[0].parts[0].file
+    deleteBefore = datetime.datetime.now() - datetime.timedelta(hours=protectHours)
     """ (bool(doTV) is not bool(entry.grandparentTitle in skipTV) is a logic XOR, in Python
         as far as I know there is no logic operand to do XOR (only bitwise xor ^)
         It can be written using the bitwise xor operand (bool(doTV) ^ bool(entry.grandparentTitle in skipTV) """ 
-    if (bool(doTV) is not bool(entry.grandparentTitle in skipTV)) and entry not in plex.library.onDeck():
+    if (bool(doTV) is not bool(entry.grandparentTitle in skipTV)) and entry not in plex.library.onDeck() and entry.lastViewedAt <= deleteBefore:
         print 'Deleting '+entry.title+' ::: '+tvFile
         deleted += 1
-        if trialRun: os.remove(tvFile)
+        if realRun: os.remove(tvFile)
             if doSim:
                 for sim in simFiles:
                     simFile = os.path.splitext(tvFile)[0]+sim
                     if os.path.isfile(simFile):
                         print '::: Deleting it\'s similar file too ::: '+simFile
                         delSim += 1
-                        if trialRun: os.remove(simFile)
+                        if realRun: os.remove(simFile)
     else:
         kept += 1
 print ''
